@@ -11,7 +11,6 @@ from app.models.code_migration import CodeMigration
 def run_code_migrations():
     """Run any pending migrations."""
     migrations_dir = os.path.join(os.path.dirname(__file__), 'code_migrations')
-    print(migrations_dir)
     executed_migrations = {m.filename for m in db.session.query(CodeMigration.filename).all()}
 
     for filename in sorted(os.listdir(migrations_dir)):
