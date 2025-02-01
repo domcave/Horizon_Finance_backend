@@ -10,11 +10,10 @@ class User(Base):
     username = Column(String(50), unique=True)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
+    access_token = Column(String(255))
 
     def set_password(self, password):
-        """Hash the password before saving it."""
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
-        """Check if the provided password matches the hashed password."""
         return bcrypt.check_password_hash(self.password, password)

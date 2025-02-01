@@ -47,5 +47,3 @@ class OpenAIService:
         except json.JSONDecodeError:
             print("Error: OpenAI response was not valid JSON:", response)
             return None
-
-
