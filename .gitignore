@@ -1,0 +1,8 @@
+.idea
+.venv
+.vscode
+.env
+*.pyc
+/venv
+github_key.txt
+.venv
