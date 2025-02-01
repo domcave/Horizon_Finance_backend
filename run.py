@@ -9,7 +9,8 @@ from app.models.code_migration import CodeMigration
 
 app = create_app()
 
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, supports_credentials=True)
+
 
 def run_code_migrations():
     """Run any pending migrations."""
@@ -42,6 +43,7 @@ def before_request():
 @app.route('/health', methods=['GET'])
 def health_check():
     return 'Healthy', 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

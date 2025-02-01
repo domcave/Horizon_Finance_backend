@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import os
 from app.extensions import db, jwt, bcrypt
@@ -12,6 +13,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'supersecretkey')
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwtsecretkey')
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     db.init_app(app)
     bcrypt.init_app(app)

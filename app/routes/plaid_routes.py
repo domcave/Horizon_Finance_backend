@@ -9,8 +9,10 @@ from plaid.model.products import Products
 from plaid.model.country_code import CountryCode
 import json
 import constants
+from flask_cors import CORS
 
 plaid_bp = Blueprint('plaid', __name__)
+CORS(plaid_bp)
 
 configuration = plaid.Configuration(
     host=plaid.Environment.Sandbox,
@@ -25,11 +27,18 @@ client = plaid_api.PlaidApi(api_client)
 
 @plaid_bp.route("/link_token", methods=["POST"])
 def generateLinkToken():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    
+    # Validate user_id
+    if not user_id or not isinstance(user_id, str):
+        return jsonify({"error": "Invalid user_id, expected a non-empty string"}), 400
+
     request_data = LinkTokenCreateRequest(
         client_name='Horizon Finance',
         language='en',
         country_codes=[CountryCode("US")],
-        user=LinkTokenCreateRequestUser(client_user_id='user'),  # Replace with actual user ID
+        user=LinkTokenCreateRequestUser(client_user_id=user_id),  
         products=[
             Products("auth"), 
             Products("transactions"),
@@ -38,10 +47,12 @@ def generateLinkToken():
         ],
     )
     try:
-        response = client.link_token_create(request_data)
-        link_token = response.to_dict()['link_token']
+        response = client.link_token_create(request_data).to_dict()
+        link_token = response['link_token']
         print(link_token)
-        return jsonify(response.to_dict()), 200
+        response = jsonify(response)
+        print('link_token')
+        return response, 200
     except plaid.ApiException as e:
         error_message = json.loads(e.body)
         print(f"Error creating Link token: {error_message}")
@@ -60,7 +71,8 @@ def exchangePublicForAccess():
         )
         exchange_response = client.item_public_token_exchange(exchange_request)
         access_token = exchange_response.to_dict()['access_token']
-        return jsonify({"access_token": access_token}), 200
+        # Save access token to DB
+        return jsonify({ "access_token": access_token }), 200
     except plaid.ApiException as e:
         error_message = json.loads(e.body)
         print(f"Error exchanging token: {error_message}")
