@@ -6,3 +6,4 @@
 /venv
 github_key.txt
 .venv
+/migrations

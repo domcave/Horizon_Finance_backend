@@ -12,11 +12,16 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    first_name = data.get('first_name')
     last_name = data.get('last_name')
+    first_name = data.get('first_name')
 
-    result, status_code = auth_service.register_user(username, email, password, first_name=first_name, last_name=last_name)
-
+    result, status_code = auth_service.register_user(
+        username, 
+        email, 
+        password, 
+        first_name, 
+        last_name
+    )
     return jsonify(result), status_code
 
 
