@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token
 from datetime import timedelta
 
 class AuthService:
-    def register_user(username, email, password, first_name, last_name):
+    def register_user(self, username, email, password, first_name, last_name):
         if db.session.query(User).filter_by(email=email).first():
             return {"error": "Email already registered"}, 400
 
