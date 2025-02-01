@@ -19,5 +19,7 @@ def create_app():
 
     from app.routes.auth_routes import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    from app.routes.plaid_routes import plaid_bp
+    app.register_blueprint(plaid_bp, url_prefix="/plaid")
 
     return app
