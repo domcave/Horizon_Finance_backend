@@ -88,7 +88,7 @@ def exchangePublicForAccess():
     
     
 
-@plaid_bp.route("/transactions/30days", methods=["POST"])
+@plaid_bp.route("/transactions/30days", methods=["GET"])
 def getTransactionsLast30():
     username = request.args.get("username")  # Extracts username from query params
     end = datetime.datetime.now()
@@ -112,6 +112,25 @@ def getTransactionsLast30():
         return jsonify({"error": error_message}), 400
     
     
-@plaid_bp.route("/transactions/month", methods=["POST"])
+@plaid_bp.route("/transactions/month", methods=["GET"])
 def getTransactionsThisMonth():
-    client.transactions_get()
+    username = request.args.get("username")  # Extracts username from query params
+    end = datetime.datetime.now()
+    start = end.replace(day=1)  # First day of the current month
+    
+    ACCESS_TOKEN = db.session.query(User).filter(User.username == username).first().access_token
+    
+    body = {
+        "access_token": ACCESS_TOKEN,
+        "start_date": start.strftime("%Y-%m-%d"),
+        "end_date": end.strftime("%Y-%m-%d"),
+    }
+    try:
+        response = client.transactions_get(body).to_dict()
+        transactions = plaid_service.processTransactions(response)
+        return jsonify(transactions), 200
+        
+    except plaid.ApiException as e:
+        error_message = json.loads(e.body)
+        print(f"Error getting transactions: {error_message}")
+        return jsonify({"error": error_message}), 400
