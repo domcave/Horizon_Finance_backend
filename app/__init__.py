@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import os
 from app.extensions import db, jwt, bcrypt
@@ -45,6 +46,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'supersecretkey')
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwtsecretkey')
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     db.init_app(app)
     bcrypt.init_app(app)
@@ -52,6 +54,8 @@ def create_app():
 
     from app.routes.auth_routes import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    from app.routes.plaid_routes import plaid_bp
+    app.register_blueprint(plaid_bp, url_prefix="/plaid")
 
     from app.routes.ai_routes import ai_bp
     app.register_blueprint(ai_bp, url_prefix='/ai')
