@@ -1,6 +1,6 @@
 # Horizon_Finance_backend
 
-Personal financial guidance for those at different life stages.
+Personal financial insights and guidance for those at different life stages.
 
 # Starting Projcet
 
