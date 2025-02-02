@@ -11,6 +11,8 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
     access_token = Column(String(255))
+    income = Column(Integer)
+    age = Column(Integer)
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')

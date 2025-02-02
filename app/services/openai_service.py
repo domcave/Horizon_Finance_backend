@@ -42,8 +42,7 @@ class OpenAIService:
         response = messages.data[0].content[0].text.value.replace('\n', '').replace('```json', '').replace('```', '')
 
         try:
-            data = json.loads(response)
-            return data
+            return response
         except json.JSONDecodeError:
             print("Error: OpenAI response was not valid JSON:", response)
             return None
