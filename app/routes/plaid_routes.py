@@ -30,6 +30,10 @@ configuration = plaid.Configuration(
 api_client = plaid.ApiClient(configuration)
 client = plaid_api.PlaidApi(api_client)
 
+def getUserAccessToken(username):
+        ACCESS_TOKEN = db.session.query(User).filter(User.username == username).first().access_token
+        return ACCESS_TOKEN
+
 
 @plaid_bp.route("/link_token", methods=["POST"])
 def generateLinkToken():
@@ -79,14 +83,15 @@ def exchangePublicForAccess():
         exchange_response = client.item_public_token_exchange(exchange_request)
         ACCESS_TOKEN = exchange_response.to_dict()['access_token']
         # Save access token to DB
-        db.session.query(User).filter(User.username == username).update({"access_token": ACCESS_TOKEN})
+        user = db.session.query(User).filter(User.username == username).first()
+        user.access_token = ACCESS_TOKEN
+        db.session.commit()
         return jsonify({ "access_token": ACCESS_TOKEN }), 200
     except plaid.ApiException as e:
         error_message = json.loads(e.body)
         print(f"Error exchanging token: {error_message}")
         return jsonify({"error": error_message}), 400
-    
-    
+        
 
 @plaid_bp.route("/transactions/30days", methods=["GET"])
 def getTransactionsLast30():
@@ -94,7 +99,8 @@ def getTransactionsLast30():
     end = datetime.datetime.now()
     start = end - datetime.timedelta(days=30)
     
-    ACCESS_TOKEN = db.session.query(User).filter(User.username == username).first().access_token
+    ACCESS_TOKEN = getUserAccessToken(username)
+
     
     body = {
         "access_token": ACCESS_TOKEN,
@@ -118,7 +124,7 @@ def getTransactionsThisMonth():
     end = datetime.datetime.now()
     start = end.replace(day=1)  # First day of the current month
     
-    ACCESS_TOKEN = db.session.query(User).filter(User.username == username).first().access_token
+    ACCESS_TOKEN = getUserAccessToken(username)
     
     body = {
         "access_token": ACCESS_TOKEN,
@@ -134,3 +140,42 @@ def getTransactionsThisMonth():
         error_message = json.loads(e.body)
         print(f"Error getting transactions: {error_message}")
         return jsonify({"error": error_message}), 400
+    
+    
+@plaid_bp.route("/investments/holdings", methods=["GET"])
+def getInvestmentHoldings():
+    username = request.args.get("username")  # Extracts username from query params
+    ACCESS_TOKEN = getUserAccessToken(username)
+    body = {
+        "access_token": ACCESS_TOKEN
+    }
+    try:
+        response = client.investments_holdings_get(body).to_dict()
+        investments = plaid_service.processInvestments(response)
+        return jsonify(investments), 200
+        
+    except plaid.ApiException as e:
+        error_message = json.loads(e.body)
+        print(f"Error getting investments: {error_message}")
+        return jsonify({"error": error_message}), 400
+        
+        
+        
+@plaid_bp.route("/accounts/balance", methods=["GET"])
+def getAccountBalances():
+    username = request.args.get("username")  # Extracts username from query params
+    ACCESS_TOKEN = getUserAccessToken(username)
+    body = {
+        "access_token": ACCESS_TOKEN
+    }
+    try:
+        response = client.accounts_balance_get(body).to_dict()
+        investments = plaid_service.processAccountBalances(response)
+        return jsonify(investments), 200
+        
+    except plaid.ApiException as e:
+        error_message = json.loads(e.body)
+        print(f"Error getting account balances: {error_message}")
+        return jsonify({"error": error_message}), 400
+        
+    
