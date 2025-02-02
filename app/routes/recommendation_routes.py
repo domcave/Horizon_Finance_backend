@@ -10,14 +10,12 @@ CORS(rec_bp)
 
 
 def getUserIncome(username):
-    # user_income = db.session.query(User).filter(User.username == username).first().income
-    # return user_income
-    return 100000
+    user_income = db.session.query(User).filter(User.username == username).first().income
+    return user_income
 
 def getUserAge(username):
-    # user_age = db.session.query(User).filter(User.username == username).first().age
-    # return user_age
-    return 29
+    user_age = db.session.query(User).filter(User.username == username).first().age
+    return user_age
 
 
 @rec_bp.route("/house", methods=["GET"])
