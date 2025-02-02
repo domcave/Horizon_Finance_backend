@@ -4,7 +4,7 @@ class HouseRecommendation:
     national_avg_15_yr_mortgage_rate = 0.0635
     national_avg_10_yr_mortgage_rate = 0.0628
 
-    def get_recommendation(income, owned_house_price):
+    def get_recommendation(income, owned_house_price=0):
         max_mortgage = income * 4.5
 
         max_house_price = (max_mortgage * 0.8) + owned_house_price
