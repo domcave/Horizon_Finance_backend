@@ -1,8 +1,10 @@
 # Horizon_Finance_backend
 
-Personal financial guidance for those at different life stages
+Personal financial guidance for those at different life stages.
 
 # Starting Projcet
+
+_Assumes that Python and Postgres are installed_
 
 run
 `export FLASK_APP=run.py  `
@@ -18,6 +20,11 @@ In .env add:
 
 1. DATABASE_URL
 2. JWT_SECRET_KEY - for authentication
+3. SECRET_KEY
+4. PLAIN_CLIENT_ID
+5. PLAID_SECRET_KEY
+6. OPENAI_API_KEY
+7. OPENAI_ASSISTANT_ID
 
 # Postgresql
 
@@ -39,6 +46,13 @@ psql -U financehorizon -d finance-horizon-db
 if it asks for password it's "password"
 
 # Dependencies
+
+Create Virtual Environment
+
+```
+python -m venv venv
+source /venv/bin/activate
+```
 
 To install dependencies run
 
