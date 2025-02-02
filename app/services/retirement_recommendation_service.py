@@ -1,5 +1,5 @@
 class RetirementRecommendation:
-    def calculate_retirement(self, age, savings, annual_income, annual_return_rate=0.07, withdrawal_rate=0.04):
+    def calculate_retirement(self, age, savings, annual_income, target_amount, annual_return_rate=0.07, withdrawal_rate=0.04):
         required_retirement_savings = annual_income / withdrawal_rate
 
         years_until_retirement = 0
@@ -23,5 +23,6 @@ class RetirementRecommendation:
             "years_until_retirement": years_until_retirement,
             "total_retirement_savings": future_value_savings,
             "required_retirement_savings": required_retirement_savings,
-            "suggested_monthly_investment": monthly_investment
+            "suggested_monthly_investment": monthly_investment,
+            "target_amount": target_amount
         }

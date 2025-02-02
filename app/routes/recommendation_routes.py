@@ -10,14 +10,12 @@ CORS(rec_bp)
 
 
 def getUserIncome(username):
-    # user_income = db.session.query(User).filter(User.username == username).first().income
-    # return user_income
-    return 100000
+    user_income = db.session.query(User).filter(User.username == username).first().income
+    return user_income
 
 def getUserAge(username):
-    # user_age = db.session.query(User).filter(User.username == username).first().age
-    # return user_age
-    return 29
+    user_age = db.session.query(User).filter(User.username == username).first().age
+    return user_age
 
 
 @rec_bp.route("/house", methods=["GET"])
@@ -87,6 +85,7 @@ def getRetirementRecommendation():
             - savings
             - arr (annual return rate)
             - wd_rate (withdrawl_rate)
+            - target_amount
     '''
     try:
         username = request.args.get("username")
@@ -95,7 +94,8 @@ def getRetirementRecommendation():
         savings = int(request.args.get("savings"))
         arr = float(request.args.get("arr"))
         wd_rate = float(request.args.get("wd_rate"))
-        
+        target_amount = int(request.args.get("target_amount"))
+
         text = retirement_rec_service.calculate_retirement(age, savings, annual_income, arr, wd_rate)
         text = json.dumps(text)
         response = ai_service.generate_summary(text)

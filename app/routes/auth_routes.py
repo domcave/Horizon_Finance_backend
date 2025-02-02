@@ -35,4 +35,13 @@ def login():
 
     result, status_code = auth_service.login_user(email, password)
 
+    username = db.session.query(User).filter(User.email == email).first().username
+    first_name = db.session.query(User).filter(User.email == email).first().first_name
+
+    result = {
+        "username": username,
+        "access_token": result["access_token"],
+        "first_name": first_name
+    }
+
     return jsonify(result), status_code
