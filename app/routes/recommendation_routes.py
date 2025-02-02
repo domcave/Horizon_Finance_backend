@@ -10,15 +10,17 @@ CORS(rec_bp)
 
 
 def getUserIncome(username):
-    user_income = db.session.query(User).filter(User.username == username).first().income
-    return user_income
+    # user_income = db.session.query(User).filter(User.username == username).first().income
+    # return user_income
+    return 100000
 
 def getUserAge(username):
-    user_age = db.session.query(User).filter(User.username == username).first().age
-    return user_age
+    # user_age = db.session.query(User).filter(User.username == username).first().age
+    # return user_age
+    return 29
 
 
-@rec_bp.route("/house", ["GET"])
+@rec_bp.route("/house", methods=["GET"])
 def getHouseRecommendation():
     '''
         Query Params:
@@ -26,22 +28,26 @@ def getHouseRecommendation():
             - owned_house_price
     '''
     try:
+        for key, val in request.args.items():
+            print(f"key: {key}, val: {val}")
         username = request.args.get("username")
         income = getUserIncome(username)
-        owned_house_price = request.args.get("owned_house_price")
+        owned_house_price = int(request.args.get("owned_house_price"))
         
         text = house_rec_service.get_recommendation(income, owned_house_price)
+        text = json.dumps(text)
         response = ai_service.generate_summary(text)
-        return jsonify(response), 200
+        print(type(response))
+        return jsonify({"recommendation": response}), 200
     except Exception as e:
         print(e)
         return jsonify({
             "error": "Some error when getting summarized recommendation",
             "full_error": e
-        })
+        }), 400
 
 
-@rec_bp.route("/marriage", ["GET"])
+@rec_bp.route("/marriage", methods=["GET"])
 def getMarriageRecommendation():
     '''
         Query Params:
@@ -55,24 +61,25 @@ def getMarriageRecommendation():
     try:
         username = request.args.get("username")
         annual_income = getUserIncome(username)
-        spouse_income = request.args.get("spouse_income")
-        num_kids = request.args.get("num_kids")
-        save = request.args.get("save")
-        years_to_college = request.args.get("years_to_college")
-        arr = request.args.get("arr")
+        spouse_income = int(request.args.get("spouse_income"))
+        num_kids = int(request.args.get("num_kids"))
+        save = bool(request.args.get("save"))
+        years_to_college = int(request.args.get("years_to_college"))
+        arr = float(request.args.get("arr"))
         
         text = marraige_rec_service.get_recommend(spouse_income, annual_income, num_kids, save, years_to_college, arr)
+        text = json.dumps(text)
         response = ai_service.generate_summary(text)
-        return jsonify(response), 200
+        return jsonify({"recommendation": response}), 200
     except Exception as e:
         print(e)
         return jsonify({
             "error": "Some error when getting summarized recommendation",
             "full_error": e
-        })
+        }), 400
 
 
-@rec_bp.route("/retirement", ["GET"])
+@rec_bp.route("/retirement", methods=["GET"])
 def getRetirementRecommendation():
     '''
         Query Params:
@@ -85,17 +92,18 @@ def getRetirementRecommendation():
         username = request.args.get("username")
         annual_income = getUserIncome(username)
         age = getUserAge(username)
-        savings = request.args.get("savings")
-        arr = request.args.get("arr")
-        wd_rate = request.args.get("wd_rate")
+        savings = int(request.args.get("savings"))
+        arr = float(request.args.get("arr"))
+        wd_rate = float(request.args.get("wd_rate"))
         
         text = retirement_rec_service.calculate_retirement(age, savings, annual_income, arr, wd_rate)
+        text = json.dumps(text)
         response = ai_service.generate_summary(text)
-        return jsonify(response), 200
+        return jsonify({"recommendation": response}), 200
     except Exception as e:
         print(e)
         return jsonify({
             "error": "Some error when getting summarized recommendation",
             "full_error": e
-        })
+        }), 400
 
