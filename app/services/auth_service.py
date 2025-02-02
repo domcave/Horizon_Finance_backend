@@ -14,9 +14,9 @@ class AuthService:
         db.session.add(new_user)
         db.session.commit()
 
-        return {"message": "User registered successfully"}, 201
+        return {"message": "User registered successfully"}, 200
 
-    def login_user(email, password):
+    def login_user(self, email, password):
         user = db.session.query(User).filter_by(email=email).first()
         
         if not user or not user.check_password(password):

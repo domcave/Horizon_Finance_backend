@@ -4,7 +4,7 @@ from flask_cors import CORS
 
 auth_bp = Blueprint('auth', __name__)
 
-CORS(auth_bp)
+CORS(auth_bp, supports_credentials=True)
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
