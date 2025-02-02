@@ -60,6 +60,8 @@ def create_app():
     app.register_blueprint(ai_bp, url_prefix='/ai')
     from app.routes.recommendation_routes import rec_bp
     app.register_blueprint(rec_bp, url_prefix='/recommendations')
+    from app.routes.user_routes import user_bp
+    app.register_blueprint(user_bp, url_prefix='/user')
 
     with app.app_context():
         initialize_migrations()

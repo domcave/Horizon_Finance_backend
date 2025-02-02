@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 from app.init_services import auth_service
 from flask_cors import CORS
-import logging
+from app.extensions import db
+from app.models.user import User
 
 auth_bp = Blueprint('/auth', __name__)
 

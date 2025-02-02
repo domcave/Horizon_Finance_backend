@@ -7,6 +7,9 @@ class AuthService:
     def register_user(self, username, email, password, first_name, last_name):
         if db.session.query(User).filter_by(email=email).first():
             return {"error": "Email already registered"}, 400
+        
+        if db.session.query(User).filter_by(username=username).first():
+            return {"error": "Username already taken"}, 400
 
         new_user = User(username=username, email=email, first_name=first_name, last_name=last_name)
         new_user.set_password(password)

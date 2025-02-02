@@ -41,6 +41,7 @@ def generateLinkToken():
     user_id = data.get("user_id")
     
     if not user_id or not isinstance(user_id, str):
+        print("Invalid user_id")
         return jsonify({"error": "Invalid user_id, expected a non-empty string"}), 400
 
     request_data = LinkTokenCreateRequest(
