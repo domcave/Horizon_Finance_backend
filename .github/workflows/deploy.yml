@@ -1,0 +1,47 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up SSH
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      # Step 3: Deploy to EC2
+      - name: Deploy Backend and Start Database
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} "
+            cd /home/ec2-user &&
+            
+            if [ -d 'horizon-finance-backend' ]; then
+              cd horizon-finance-backend &&
+              git pull origin main;
+            else
+              git clone git@github.com:domcave/Horizon_Finance_backend.git &&
+              cd horizon-finance-backend;
+            fi
+            
+            # Run backend setup commands
+            sudo systemctl stop httpd &&
+            sudo systemctl stop horizon-finance-backend.service &&
+            python3.9 -m venv venv &&
+            source venv/bin/activate &&
+            pip install -r requirements.txt &&
+            alembic upgrade head &&
+            sudo systemctl start httpd &&
+            sudo systemctl restart horizon-finance-backend
+          "
+
