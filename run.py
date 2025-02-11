@@ -22,3 +22,5 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
+else:
+    gunicorn_app = create_app()
