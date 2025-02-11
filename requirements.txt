@@ -26,7 +26,6 @@ nulltype==2.3.1
 openai==1.61.0
 packaging==24.2
 plaid-python==28.1.0
-psycopg2==2.9.10
 psycopg2-binary==2.9.10
 pydantic==2.10.6
 pydantic_core==2.27.2
