@@ -2,7 +2,11 @@
 
 Personal financial insights and guidance for those at different life stages.
 
-# Starting Projcet
+**This has been deployed!!!** 
+
+This backend provides various services to the Horizon Finance frontend.
+
+# Starting Project — Local
 
 _Assumes that Python and Postgres are installed_
 
