@@ -17,6 +17,13 @@ def getUserAge(username):
     user_age = db.session.query(User).filter(User.username == username).first().age
     return user_age
 
+@rec_bp.route('/recommendations/*', methods=['OPTIONS'])
+def handle_preflight():
+    response = jsonify({'message': 'CORS preflight successful'})
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
 
 @rec_bp.route("/house", methods=["GET"])
 def getHouseRecommendation():
