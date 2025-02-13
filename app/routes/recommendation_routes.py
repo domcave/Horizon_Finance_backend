@@ -17,7 +17,6 @@ def getUserAge(username):
     user_age = db.session.query(User).filter(User.username == username).first().age
     return user_age
 
-
 @rec_bp.route("/house", methods=["GET"])
 def getHouseRecommendation():
     '''
